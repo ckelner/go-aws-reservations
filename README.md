@@ -1,2 +1,2 @@
-# go-aws-reservations
-playing around with go to pull JIT aws reservation information
+# go-random
+playing around with go 
