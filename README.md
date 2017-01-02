@@ -1,2 +1,2 @@
-# go-random
-playing around with go 
+# random
+Random snippits
