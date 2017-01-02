@@ -3,7 +3,13 @@ Convert positive integers to roman numerals
 
 Lots of hax - did this in under 45min
 
-WIP - numbers such as 49, 99, 499, and 999 do not convert properly and tests fail
+WIP - numbers such as 49, 99, 499, and 999 do not convert properly and tests fail  because of:
+https://www.reddit.com/r/NoStupidQuestions/comments/2tngkh/why_is_49_xlix_instead_of_il_in_the_roman_numeral/
+
+> You can only subtract a power of ten, and only from the next two higher "digits". The digits are {I, V, X, L, C, D, M}.
+> I can be subtracted only from V and X
+> X can be subtracted only from L and C
+> C can be subtracted only from D and M
 
 See https://repl.it/EzXz/113 to run it
 */
