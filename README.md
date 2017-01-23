@@ -1,2 +1,2 @@
 # random
-Random snippits
+Random snippits, hacks, projects, whatever
