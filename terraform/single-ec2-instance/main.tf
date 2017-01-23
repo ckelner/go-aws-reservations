@@ -47,11 +47,12 @@ resource "aws_security_group" "main_security_group" {
 }
 
 resource "aws_instance" "ec2_instance" {
-  ami = "${lookup(var.amis_community_ubuntu_1404, var.aws_region)}"
+  ami = "${lookup(var.amazon_linux_2016091_HVM_SSD, var.aws_region)}"
   count = "${var.number_of_instances}"
   subnet_id = "${module.vpc.public_subnets[0]}"
   instance_type = "${var.instance_type}"
   tags {
     "Terraform" = "true"
+    "Name" = "kelnerhax-testing"
   }
 }
