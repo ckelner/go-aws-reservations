@@ -1,3 +1,4 @@
+/*
 provider "aws" {
   region = "${var.aws_region}"
 }
@@ -67,3 +68,4 @@ resource "aws_launch_configuration" "web-lc" {
   instance_type = "${var.instance_type}"
   security_groups = ["${aws_security_group.main_security_group.id}"]
 }
+*/
