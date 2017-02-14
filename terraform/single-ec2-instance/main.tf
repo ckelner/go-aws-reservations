@@ -20,7 +20,7 @@ module "vpc" {
 
 resource "aws_security_group" "main_security_group" {
     name = "Kelnerhax-SSH-testing"
-    description = "kelnerhax"
+    description = "dfjhsdjkfhsdjfhsdfhkjsdfkjhsdfsdf - test"
     vpc_id = "${module.vpc.vpc_id}"
     // allows traffic from the SG itself for tcp
     ingress {
