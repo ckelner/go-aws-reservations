@@ -1,6 +1,6 @@
-// ##########################################################################
-// ############# CONFIGURATION ##############################################
-// ##########################################################################
+##########################################################################
+############# CONFIGURATION ##############################################
+##########################################################################
 
 provider "aws" {
   region = "${var.aws_region}"
@@ -22,14 +22,14 @@ resource "aws_security_group" "main_security_group" {
     name = "Kelnerhax-SSH-testing"
     description = "dfjhsdjkfhsdjfhsdfhkjsdfkjhsdfsdf - test"
     vpc_id = "${module.vpc.vpc_id}"
-    // allows traffic from the SG itself for tcp
+    # allows traffic from the SG itself for tcp
     ingress {
       from_port = 0
       to_port = 65535
       protocol = "tcp"
       self = true
     }
-    // allows traffic from the SG itself for udp
+    # allows traffic from the SG itself for udp
     ingress {
       from_port = 0
       to_port = 65535
@@ -61,9 +61,9 @@ resource "aws_instance" "ec2_instance" {
   }
 }
 
-// ##########################################################################
-// ############# VARIABLES ##################################################
-// ##########################################################################
+##########################################################################
+############# VARIABLES ##################################################
+##########################################################################
 
 variable "aws_region" {
   default = "us-east-1"
