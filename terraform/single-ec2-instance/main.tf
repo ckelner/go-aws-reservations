@@ -17,10 +17,20 @@ module "vpc" {
     "Terraform" = "true"
   }
 }
+  
+module "sg_web_open_to_the_world" {
+  # run off master, no version
+  source = "github.com/terraform-community-modules/tf_aws_sg//sg_web"
+  security_group_name = "kelner-hax-web"
+  # get vpc id from module
+  vpc_id = "${module.vpc.vpc_id}"
+  source_cidr_block = "0.0.0.0/0" # the world - hax
+}
 
 resource "aws_security_group" "main_security_group" {
     name = "Kelnerhax-SSH-testing"
-    description = "dfjhsdjkfhsdjfhsdfhkjsdfkjhsdfsdf - test"
+    description = "test"
+    # get vpc id from module
     vpc_id = "${module.vpc.vpc_id}"
     # allows traffic from the SG itself for tcp
     ingress {
@@ -55,6 +65,7 @@ resource "aws_instance" "ec2_instance" {
   count = "${var.number_of_instances}"
   subnet_id = "${module.vpc.public_subnets[0]}"
   instance_type = "${var.instance_type}"
+  vpc_security_group_ids = ["${aws_security_group.main_security_group.id}","${module.sg_web_open_to_the_world.id}"]
   tags {
     "Terraform" = "true"
     "Name" = "kelnerhax-testing"
