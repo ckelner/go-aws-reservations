@@ -10,7 +10,7 @@ module "vpc" {
   source = "github.com/terraform-community-modules/tf_aws_vpc?ref=v1.0.3"
   name = "${var.vpc_name}"
   cidr = "${var.vpc_cidr_block}"
-  public_subnets  = "${var.subnet_cidr_block}"
+  public_subnets  = ["${var.subnet_cidr_blocks}"]
   enable_nat_gateway = "${var.nat_enabled}"
   azs = ["us-east-1a"] #hax
   tags {
