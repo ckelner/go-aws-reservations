@@ -8,11 +8,11 @@ provider "aws" {
 
 module "vpc" {
   source = "github.com/terraform-community-modules/tf_aws_vpc?ref=v1.0.3"
-  name = "kelnerhax"
-  cidr = "10.0.0.0/16"
-  public_subnets  = ["10.0.1.0/24"]
-  enable_nat_gateway = "false"
-  azs = ["us-east-1a"]
+  name = "${var.vpc_name}"
+  cidr = "${var.vpc_cidr_block}"
+  public_subnets  = "${var.subnet_cidr_block}"
+  enable_nat_gateway = "${var.nat_enabled}"
+  azs = ["us-east-1a"] #hax
   tags {
     "Terraform" = "true"
   }
@@ -25,3 +25,11 @@ module "vpc" {
 variable "aws_region" {
   default = "us-east-1"
 }
+  
+# Examples of undefined variable -- see vars.tfvars file
+variable "vpc_cidr_block" {} # "10.0.0.0/16"
+
+variable "subnet_cidr_blocks" {} # ["10.0.1.0/24"]
+  
+variable "vpc_name" {} # "kelnerhax"
+
