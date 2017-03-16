@@ -1,13 +1,13 @@
-// ##########################################################################
-// ############# CONFIGURATION ##############################################
-// ##########################################################################
+##########################################################################
+############# CONFIGURATION ##############################################
+##########################################################################
 
 provider "aws" {
   region = "${var.aws_region}"
 }
 
 module "vpc" {
-  source = "github.com/terraform-community-modules/tf_aws_vpc"
+  source = "github.com/terraform-community-modules/tf_aws_vpc?ref=v1.0.2"
   name = "kelnerhax"
   cidr = "10.0.0.0/16"
   public_subnets  = ["10.0.1.0/24"]
@@ -17,19 +17,29 @@ module "vpc" {
     "Terraform" = "true"
   }
 }
+  
+module "sg_web_open_to_the_world" {
+  # run off master, no version
+  source = "github.com/terraform-community-modules/tf_aws_sg//sg_web"
+  security_group_name = "kelner-hax-web"
+  # get vpc id from module
+  vpc_id = "${module.vpc.vpc_id}"
+  source_cidr_block = "0.0.0.0/0" # the world - hax
+}
 
 resource "aws_security_group" "main_security_group" {
     name = "Kelnerhax-SSH-testing"
-    description = "kelnerhax"
+    description = "test"
+    # get vpc id from module
     vpc_id = "${module.vpc.vpc_id}"
-    // allows traffic from the SG itself for tcp
+    # allows traffic from the SG itself for tcp
     ingress {
       from_port = 0
       to_port = 65535
       protocol = "tcp"
       self = true
     }
-    // allows traffic from the SG itself for udp
+    # allows traffic from the SG itself for udp
     ingress {
       from_port = 0
       to_port = 65535
@@ -55,15 +65,16 @@ resource "aws_instance" "ec2_instance" {
   count = "${var.number_of_instances}"
   subnet_id = "${module.vpc.public_subnets[0]}"
   instance_type = "${var.instance_type}"
+  vpc_security_group_ids = ["${aws_security_group.main_security_group.id}","${module.sg_web_open_to_the_world.id}"]
   tags {
     "Terraform" = "true"
     "Name" = "kelnerhax-testing"
   }
 }
 
-// ##########################################################################
-// ############# VARIABLES ##################################################
-// ##########################################################################
+##########################################################################
+############# VARIABLES ##################################################
+##########################################################################
 
 variable "aws_region" {
   default = "us-east-1"
