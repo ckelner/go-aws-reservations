@@ -20,11 +20,14 @@ exports.handler = function(event, context) {
       var snapshotid = data.Snapshots[snap].SnapshotId;
       var description = data.Snapshots[snap].Description;
 
+      //console.log("snapshotid: " + snapshotid);
+      //console.log("Description: " + description);
+
       my_re = /^Created by CreateImage\(.*\) for (.*) from .*$/;
 
       var description_parsed = my_re.exec(description);
       if (description_parsed && description_parsed.length > 0) {
-        ami = description_parsed[1];
+        var ami = description_parsed[1];
         //console.log ("Snapshot " + snapshotid + " associated with " + ami);
 
         new aws.EC2().describeImages({
@@ -35,9 +38,23 @@ exports.handler = function(event, context) {
             ami
           ]
         },function(error_di, data_di) {
+          // console.log("data_di ======== " + JSON.stringify(data_di));
+          // data_di.Images.ImageId
           if (error_di) {
+            //console.log("error_di ======== " + JSON.stringify(error_di));
+            /*
+            {
+                "message": "The image id '[ami-2b8a3040]' does not exist",
+                "code": "InvalidAMIID.NotFound",
+                "time": "2017-03-29T18:13:25.276Z",
+                "requestId": "ca558b7a-0fc5-4494-9bc9-773af76ec31d",
+                "statusCode": 400,
+                "retryable": false,
+                "retryDelay": 44.98776595376286
+            }
+            */
             if (error_di.code === 'InvalidAMIID.NotFound'){
-              console.log ( "AMI: " + ami + " doesn't exist " + snapshotid );
+              console.log ( error_di.message );
 
               var snapparams = {
                 SnapshotId: snapshotid
