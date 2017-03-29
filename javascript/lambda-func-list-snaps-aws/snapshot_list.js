@@ -10,7 +10,7 @@ aws.config.region = 'us-east-1';
 var ec2 = new aws.EC2();
 
 exports.handler = function(event, context) {
-  ec2.describeSnapshots({
+  new aws.EC2().describeSnapshots({
     OwnerIds: [
       'self'
     ]
@@ -25,60 +25,45 @@ exports.handler = function(event, context) {
       var description_parsed = my_re.exec(description);
       if (description_parsed && description_parsed.length > 0) {
         ami = description_parsed[1];
-        // console.log("Snapshot " + snapshotid + " associated with " + ami);
+        //console.log ("Snapshot " + snapshotid + " associated with " + ami);
 
-        if (!ami_exists (ami)){
-          console.log( "AMI:" + ami + " doesn't exist" );
+        new aws.EC2().describeImages({
+          Owners: [
+            'self'
+          ],
+          ImageIds: [
+            ami
+          ]
+        },function(error_di, data_di) {
+          if (error_di) {
+            if (error_di.code === 'InvalidAMIID.NotFound'){
+              console.log ( "AMI: " + ami + " doesn't exist " + snapshotid );
 
-          var snapparams = {
-            SnapshotId: snapshotid
-          };
-          ec2.deleteSnapshot(snapparams, function(err_ds, data_ds) {
-            if (err) {
-              console.error("Could not delete: "
-                              + snapshot
-                              + " "
-                              + err_ds
-                              + " "
-                              + err_ds.stack);
+              var snapparams = {
+                SnapshotId: snapshotid
+              };
+              new aws.EC2().deleteSnapshot(snapparams, function(err_ds, data_ds) {
+                if (err_ds) {
+                  console.log("Could not delete: "
+                                  + snapshotid
+                                  + " ("
+                                  + ami
+                                  + ")"
+                                  + err_ds
+                                  + " "
+                                  + err_ds.stack);
+                } else {
+                  console.log("\tSnapshot deleted (" + ami + "): " + snapshotid);
+                }
+              });
             } else {
-              console.log("\tSnapshot deleted: " + snapshot);
+              console.log("Actual Error: " + error_di); // a real error occurred
             }
-          });
-        }else{
-          console.log ("AMI: " + ami + " exists, leave it ")
-        }
+          } else {
+            //console.log("AMI Exists: " + ami); // request succeeded
+          }
+        });
       }
     }
   });
-}
-
-// Function defaults to thinking an AMI exists. Only returns false if we get
-// InvalideAMIID from AWS.
-function ami_exists (ami) {
-  status = true ; // default to AMI existing
-
-  var ec2ami = new aws.EC2();
-
-  ec2ami.describeImages({
-    Owners: [
-      'self'
-    ],
-    ImageIds: [
-      ami
-    ]
-  },
-  function(err, data) {
-    if (err) {
-      // console.log("AMI Error: " + ami + err, err.stack);
-      if (err.code === 'InvalidAMIID.NotFound'){
-        console.log ( "AMI Not found:" + ami );
-        status = false;
-      } else {
-        console.error ("AMI Lookup:" + err, err.stack);
-      }
-    }
-  });
-
-  return status;
 }
