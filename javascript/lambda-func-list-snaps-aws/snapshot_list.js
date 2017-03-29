@@ -25,10 +25,10 @@ exports.handler = function(event, context) {
       var description_parsed = my_re.exec(description);
       if (description_parsed && description_parsed.length > 0) {
         ami = description_parsed[1];
-        // console.log ("Snapshot " + snapshotid + " associated with " + ami);
+        // console.log("Snapshot " + snapshotid + " associated with " + ami);
 
         if (!ami_exists (ami)){
-          console.log ( "AMI:" + ami + " doesn't exist" );
+          console.log( "AMI:" + ami + " doesn't exist" );
 
           var snapparams = {
             SnapshotId: snapshotid
