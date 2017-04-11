@@ -78,9 +78,9 @@ resource "aws_instance" "ec2_instance" {
         private_key = "${var.private_key_material}"
     }
     inline = [
-      "yum update -y",
+      "sudo yum update -y",
        # Install nginx
-      "yum install -y nginx",
+      "sudo yum install -y nginx",
       # Overwrite default nginx welcome page w/ mac address of VM NIC
       "echo \"<h1>I am $(cat /sys/class/net/eth0/address)</h1>\" > \"/var/www/html/index.nginx-debian.html\""
     ]
