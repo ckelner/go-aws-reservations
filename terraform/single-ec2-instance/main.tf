@@ -88,7 +88,7 @@ resource "aws_instance" "ec2_instance" {
       # Install nginx
       "sudo yum install -y nginx",
       # Overwrite default nginx welcome page
-      "sudo echo \"<h1>I am Kelner</h1>\" > \"/usr/share/nginx/html/index.html\""
+      "echo \"<h1>I am Kelner</h1>\" | sudo tee /usr/share/nginx/html/index.html"
     ]
   }
   tags {
