@@ -87,8 +87,8 @@ resource "aws_instance" "ec2_instance" {
       # "sudo yum update -y", # Uncomment to enable updates; quicker provisioning without for demo purposes
       # Install nginx
       "sudo yum install -y nginx",
-      # Overwrite default nginx welcome page w/ mac address of VM NIC
-      "sudo echo \"<h1>I am $(cat /sys/class/net/eth0/address)</h1>\" > \"/usr/share/nginx/html/index.html\""
+      # Overwrite default nginx welcome page
+      "sudo echo \"<h1>I am Kelner</h1>\" > \"/usr/share/nginx/html/index.html\""
     ]
   }
   tags {
