@@ -7,12 +7,18 @@ provider "aws" {
 }
 
 module "vpc" {
-  source = "github.com/terraform-community-modules/tf_aws_vpc?ref=v1.0.2"
+  source = "github.com/terraform-community-modules/tf_aws_vpc?ref=v1.0.3"
   name = "kelnerhax"
   cidr = "10.0.0.0/16"
   public_subnets  = ["10.0.1.0/24"]
-  enable_nat_gateway = "false"
+  map_public_ip_on_launch = true
+  enable_nat_gateway = false
+  enable_dns_support = true
+  enable_dns_hostnames = true
   azs = ["us-east-1a"]
+  tags {
+    "Terraform" = "true"
+  }
 }
 
 module "sg_web_open_to_the_world" {
@@ -78,8 +84,8 @@ resource "aws_instance" "ec2_instance" {
         private_key = "${var.private_key_material}"
     }
     inline = [
-      "sudo yum update -y",
-       # Install nginx
+      # "sudo yum update -y", # Uncomment to enable updates; quicker provisioning without for demo purposes
+      # Install nginx
       "sudo yum install -y nginx",
       # Overwrite default nginx welcome page w/ mac address of VM NIC
       "echo \"<h1>I am $(cat /sys/class/net/eth0/address)</h1>\" > \"/var/www/html/index.nginx-debian.html\""
