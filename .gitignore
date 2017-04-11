@@ -22,3 +22,5 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+terraform/single-ec2-instance/secrets.tfvars
