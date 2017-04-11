@@ -13,11 +13,8 @@ module "vpc" {
   public_subnets  = ["10.0.1.0/24"]
   enable_nat_gateway = "false"
   azs = ["us-east-1a"]
-  tags {
-    "Terraform" = "true"
-  }
 }
-  
+
 module "sg_web_open_to_the_world" {
   # run off master, no version
   source = "github.com/terraform-community-modules/tf_aws_sg//sg_web"
@@ -60,12 +57,33 @@ resource "aws_security_group" "main_security_group" {
     }
 }
 
+resource "aws_key_pair" "ssh_key" {
+  key_name   = "ssh_key_kelnerhax"
+  public_key = "${var.public_key_material}"
+}
+
 resource "aws_instance" "ec2_instance" {
   ami = "${lookup(var.amazon_linux_2016091_HVM_SSD, var.aws_region)}"
   count = "${var.number_of_instances}"
   subnet_id = "${module.vpc.public_subnets[0]}"
   instance_type = "${var.instance_type}"
-  vpc_security_group_ids = ["${aws_security_group.main_security_group.id}","${module.sg_web_open_to_the_world.id}"]
+  key_name = "${aws_key_pair.ssh_key.key_name}"
+  vpc_security_group_ids = ["${aws_security_group.main_security_group.id}","${module.sg_web_open_to_the_world.security_group_id_web}"]
+  # Installs nginx web server on our VM via SSH
+  provisioner "remote-exec" {
+    connection {
+        type = "ssh"
+        # This is stored in a file not checked into source control
+        private_key = "${var.private_key_material}"
+    }
+    inline = [
+      "apt-get update -y",
+       # Install nginx
+      "apt-get install --yes --force-yes nginx",
+      # Overwrite default nginx welcome page w/ mac address of VM NIC
+      "echo \"<h1>I am $(cat /sys/class/net/eth0/address)</h1>\" > \"/var/www/html/index.nginx-debian.html\""
+    ]
+  }
   tags {
     "Terraform" = "true"
     "Name" = "kelnerhax-testing"
@@ -139,4 +157,14 @@ variable "number_of_instances" {
 
 variable "instance_type" {
   default = "t2.micro"
+}
+
+# This is stored in a file not checked into source control or passed in via command line or stored as a secret in a service wrapping terraform -- should be used with public_key_material (should be of the same key)
+variable "private_key_material" {
+  description = "The private key material used to connect via SSH; define in terraform.tfvars or if using a service like Terraform Enterprise define it there."
+}
+
+variable "public_key_material" {
+  description = "Ideally this is defined in terraform.tfvars - users of this should override it there, or in their terraform service of choice. For simplicity sake I have defined a default value here, but this will not work without the private key."
+  default = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDQEXzbz7uCQWfbWycU97ucC+Ka4yzwBebVbx5XuABCGybKzEjVcn2oYGWUOvxxckbg+bku6KyBfR8Aq4Ajz1ygeXl+1fuqaNVgj0BJKc9jzMdfYi53/gJzq7hypIQUcxdxu/UJiC79E7SEKpZ8DVETC4IqFe5mHVgeEyvXcXX8Xjb6xs1mCkNTAIfTc0UtZlGnKJZu3bEDvAw1/kqfpdDEuKVSqsEkjzF3cKNOATa2MRmU8djv/kS8rUhsuBKLqwAb4Brz3bo7hQtXlC8+kGuSMaKdC/Nds83hk5aX+wgGawGihlQhDRwJRgpBDAZSzT5ZIJ2Fz1BudXQnZ6tcps99 chris.kelner@weather.com"
 }
