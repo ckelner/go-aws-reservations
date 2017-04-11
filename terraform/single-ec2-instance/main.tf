@@ -73,6 +73,7 @@ resource "aws_instance" "ec2_instance" {
   provisioner "remote-exec" {
     connection {
         type = "ssh"
+        user = "ec2-user"
         # This is stored in a file not checked into source control
         private_key = "${var.private_key_material}"
     }
