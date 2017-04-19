@@ -24,3 +24,7 @@ _testmain.go
 *.prof
 
 terraform/single-ec2-instance/secrets.tfvars
+
+*.tfstate
+
+*.backup
