@@ -38,3 +38,4 @@ variable slaccountnum {
 # The datacenter to deploy to
 variable datacenter {
   default = "dal06"
+}
