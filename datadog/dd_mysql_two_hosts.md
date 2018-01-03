@@ -13,4 +13,5 @@
   * `GRANT PROCESS ON *.* TO 'datadog'@'localhost';`
   * `exit`
   * `mysql -u datadog --password=<dd-mysql-password> -e "show status" | grep Uptime && echo -e "\033[0;32mMySQL user - OK\033[0m"`
-* 
+* Use https://github.com/ckelner/datadog-mysql-vagrant to spin up to vagrants and configure the mysql check
+  * Make sure to alter their hostnames in the Vagrantfile
