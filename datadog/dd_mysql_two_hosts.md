@@ -16,6 +16,5 @@
   * Use the special virtualbox IP `10.0.2.2` to connect to the mysql instance via the host on port `3306`
   * Spin up a second vagrant the same way using `./second_vagrant/Vagrantfile` in the repo
 
-This will result in duplicate hosts reporting the same metric as seen here:
-
+This will result in two hosts reporting the same metric (duplicate) as seen here:
 ![two-hosts-one-db](https://i.imgur.com/3WD3M1C.png)
