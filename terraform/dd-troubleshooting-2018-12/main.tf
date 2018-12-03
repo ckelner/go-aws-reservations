@@ -1,6 +1,5 @@
 provider "datadog" {}
 
-# @ckelner: Datadog - I changed these to work in our demo environment
 locals {
   app_name       = "Debtwire Company Subscriber"
   component_name = "debtwire-company-subscriber"
