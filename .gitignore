@@ -28,3 +28,4 @@ terraform/single-ec2-instance/secrets.tfvars
 *.tfstate
 
 *.backup
+*.out
