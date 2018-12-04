@@ -104,6 +104,7 @@ resource "datadog_timeboard" "subscriber-hackday" {
 
   template_variable {
     name    = "env"
+    prefix    = "env"
     default = "${local.env}"
   }
 
