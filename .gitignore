@@ -30,3 +30,4 @@ terraform/single-ec2-instance/secrets.tfvars
 *.backup
 *.out
 *.terraform
+.DS_Store
